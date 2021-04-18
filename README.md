@@ -202,13 +202,6 @@ HMACSHA256(base64UrlEncode(header) + "." + base64UrlEncode(payload), secret)
  服务器应用在接受到JWT后，会首先对头部和载荷的内容用同一算法再次签名。那么服务器应用是怎么知道我们用的是哪一种算法呢？别忘了，我们在JWT的头部中已经用alg字段指明了我们的加密算法了。
  如果服务器应用对头部和载荷再次以同样方法签名之后发现，自己计算出来的签名和接受到的签名不一样，那么就说明这个Token的内容被别人动过的，我们应该拒绝这个Token，返回一个HTTP 401 Unauthorized响应。
 
-
-
-作者：梅_苇名一心
-链接：https://www.jianshu.com/p/f111328ea8c4
-来源：简书
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
-
  **session + cookie验证方式：**
 
 服务器端存储sessionI的， 下次请求带上该sessionID，一般是存在cookie中，自动发送，
