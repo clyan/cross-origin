@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- jsonp -->
+    <script src="./jsonp.js"></script>
+    <script src="./ajax.js"></script>
+    <script>
+        // 使用JSONP进行跨域。
+        JSONP.CommonUrl = 'http://127.0.0.1:3000/'
+        JSONP({
+            url: 'jsonp',
+            params: {
+                name: 'ywy',
+                age: 21
+            },
+            success(res){
+                console.log(res)
+            }
+        })
+        JSONP({
+            url: 'jsonp',
+            params: {
+                name: 'ywy',
+                age: 21
+            },
+            success(res){
+                console.log(res)
+            }
+        })
+    </script>
+</body>
+</html>

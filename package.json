@@ -1,0 +1,22 @@
+{
+  "name": "jsonp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "common": "cross-env NODE_PORT=3000 nodemon ./CommonServer/server.js",
+    "jsonp": "cross-env NODE_PORT=3001 nodemon ./JSONP/server.js ",
+    "cors": "cross-env NODE_PORT=3002 nodemon ./CORS/server.js",
+    "jwt": "cross-env NODE_PORT=3003 nodemon ./JWT/server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "express": "^4.17.1",
+    "express-jwt": "^6.0.0",
+    "jsonwebtoken": "^8.5.1"
+  }
+}

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JWT验证</title>
+</head>
+<body>
+    <div>
+        <form action="#" id="form">
+            <div>
+                <label for="name">账号：</label>
+                <input name="name" type="text" value="123" />
+            </div>
+            <div>
+                <label for="pwd">账号：</label>
+                <input name="pwd" type="password" value="123" />
+            </div>
+            <div>
+                <input type="button" id="login" value="登录" />
+            </div>
+        </form>
+        <div id="user" style="display: none;">
+            <button type="button" id="infoByToken" onclick="getInfo(true)">带token获取数据</button>
+            <button type="button" id="info" onclick="getInfo(false)">no token获取数据</button>
+            <button type="button" id="logout">退出</button>
+        </div>
+        <div id="content">
+            <div id="auth_info"></div>
+        </div>
+    </div>
+    <script src="ajax.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            let token = localStorage.getItem('Authorzation_Token');
+            if(token) {
+                logined();
+            }
+        })
+        function $(el){
+            return document.querySelector(el);
+        }
+        const login = $('#login');
+        const logout = $('#logout');
+        const form = $('#form');
+        const user = $('#user');
+        const info = $('#info');
+        const infoByToken = $('#infoByToken');
+        const content = $('#content');
+        const authInfo = $('#auth_info');
+        function hide(dom) {
+            dom.style.display = 'none';
+        }
+        function show(dom, param) {
+            dom.style.display = param || 'block';
+        }
+        function logined() {
+            hide(form);
+            show(user);
+        }
+        function logouted() {
+            hide(user);
+            show(form);
+            clearAuthInfo();
+        }
+        function addAuthorzationInfoToAuthInfo(data) {
+            const p = document.createElement('p');
+            p.innerText = JSON.stringify(data);
+            authInfo.appendChild(p)
+        }
+        function clearAuthInfo() {
+            authInfo.innerText = ''
+        }
+        login.addEventListener('click', function(e) {
+            ajax({
+                type: 'POST',
+                url:'http://127.0.0.1:3003/login',
+                contentType: '',
+                credentials: true,
+                data: {
+                    name: $('[name = name]').value,
+                    pwd: $('[name = pwd]').value,
+                },
+                success(res) {
+                    if(res.status === 'ok') {
+                        logined();
+                        localStorage.setItem('Authorzation_Token', res.token);
+                    }
+                }
+            })
+        })
+        function getInfo(token = false) {
+            let headers = token ? {Authorization: localStorage.getItem('Authorzation_Token')} : {}
+            ajax({
+                type: 'get',
+                url: 'info',
+                headers: headers,
+                contentType: '',
+                credentials: true,
+                success(res) {
+                    if(res.status === 'ok') {
+                        console.log(res)
+                        addAuthorzationInfoToAuthInfo(res)
+                    }
+                },
+                error(err){
+                    console.log(err);
+                    addAuthorzationInfoToAuthInfo(err)
+                }
+            })
+        }
+        logout.addEventListener('click',function(e) {
+            logouted();
+            localStorage.removeItem('Authorzation_Token');
+        })
+    </script>
+</body>
+</html>
