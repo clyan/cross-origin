@@ -85,7 +85,7 @@
 对xhr简单封装用于请求。
 
 ```js
- function ajax({
+function ajax({
     type = 'GET',
     url,
     headers= {},
@@ -94,7 +94,8 @@
     timeout = 5000,
     credentials = false,
     async = true,
-    success = () => {} 
+    success = () => {},
+    error = ()=> {}
 }) {
     const xhr = new XMLHttpRequest();
     xhr.ontimeout = timeout;
@@ -104,7 +105,7 @@
     xhr.withCredentials = credentials;
     if(data) {
         const paramString = Object.keys(data).map((key) => {
-            return  `${key}= ${encodeURIComponent(data[key])}`
+            return  `${key}=${encodeURIComponent(data[key])}`
         }).join('&');
 
         if(url.split('?').length < 2) {
@@ -133,6 +134,9 @@
     xhr.onprogress = function() {
         //console.log("xhr onprogress")
     }
+    xhr.onerror = function(err) {
+        error(err);
+    }
     // 使用abort终止后不会触发， 
     xhr.onreadystatechange = function() {
         // 0：未初始化。尚未调用open()方法。
@@ -140,9 +144,13 @@
         // 2：发送。已经调用send()方法，但尚未接收到响应。
         // 3：接收。已经接收到部分响应数据。
         // 4：完成。已经接收到全部响应数据，而且已经可以在客户端使用了。
-        if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            success(JSON.parse(xhr.responseText))
-        }
+        if(xhr.readyState === XMLHttpRequest.DONE) {
+            if(xhr.status === 200) {
+                success(JSON.parse(xhr.responseText))
+            } else if(xhr.status === 401){
+                error({code: 401, status:'err', msg: '认证失败，请检查是否token是否有效'});
+            }
+        } 
     }
 
     // 发送请求，并发送参数
